@@ -21,7 +21,7 @@ namespace An0n_Patches
     {
         public const string pluginGUID = "com.an0n.yodelPatch";
         private const string pluginName = "An0n Yodel & FallDmg Patch";
-        private const string pluginVersion = "1.0.0";
+        private const string pluginVersion = "1.0.4";
         public static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(pluginGUID);
         private Harmony harmony = new Harmony(pluginGUID);
         public static ConfigEntry<bool> enableFallDmgSounds;
