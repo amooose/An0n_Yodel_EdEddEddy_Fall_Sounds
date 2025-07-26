@@ -26,6 +26,7 @@ namespace An0n_Patches
         private Harmony harmony = new Harmony(pluginGUID);
         public static ConfigEntry<bool> enableFallDmgSounds;
         public static ConfigEntry<bool> allowYodel;
+        public static ConfigEntry<float> yodelAndFallVolume;
         public static An0n_Patch_Plugin instance;
         public static string soundLoc;
         private void Awake()
@@ -39,8 +40,12 @@ namespace An0n_Patches
                              "allowYodel",
                              true,
                              "Allow yodeling or not");
+            yodelAndFallVolume = Config.Bind("General",
+                             "yodelAndFallVolume",
+                             1.0f,
+                             "Volume of the yodel and fall damage sounds. 0.0-1.0");
 
-            Debug.Log("[An0nPatch] Yodel/Fall Sounds Plugin Loaded!");
+            Debug.Log("[An0nPatch] Yodel & Fall Sounds Plugin "+pluginVersion+" Loaded!");
             
 
             string location = ((BaseUnityPlugin)An0n_Patch_Plugin.instance).Info.Location;

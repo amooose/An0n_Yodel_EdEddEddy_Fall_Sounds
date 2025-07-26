@@ -36,6 +36,7 @@ namespace An0n_Patches.Patches
             }
         }
 
+        //TODO: make sound loading better and not rely on magic num 9 for yodel
         public static void getAudioAndPlay(Character player, int rSound)
         {
             if (!An0n_Patch_Plugin.allowYodel.Value && rSound == 9) { return; }
@@ -67,6 +68,7 @@ namespace An0n_Patches.Patches
                 charDmg.maxDistance = 1000f;
                 charDmg.rolloffMode = AudioRolloffMode.Logarithmic;
                 charDmg.clip = sound;
+                charDmg.volume = An0n_Patch_Plugin.yodelAndFallVolume.Value;
                 charDmg.Play();
 
                 //If its a yodel, show it on the other players face as well
