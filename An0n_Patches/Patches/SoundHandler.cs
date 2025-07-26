@@ -68,7 +68,14 @@ namespace An0n_Patches.Patches
                 charDmg.maxDistance = 1000f;
                 charDmg.rolloffMode = AudioRolloffMode.Logarithmic;
                 charDmg.clip = sound;
-                charDmg.volume = An0n_Patch_Plugin.yodelAndFallVolume.Value;
+                if(An0n_Patch_Plugin.useGameSFXVolume.Value )
+                {
+                    charDmg.volume = GameHandler.Instance.SettingsHandler.GetSetting<SFXVolumeSetting>().Value;
+                }
+                else
+                {
+                    charDmg.volume = An0n_Patch_Plugin.yodelAndFallVolume.Value;
+                }
                 charDmg.Play();
 
                 //If its a yodel, show it on the other players face as well

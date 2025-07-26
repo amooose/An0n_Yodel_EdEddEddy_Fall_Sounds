@@ -126,6 +126,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>S:\SteamLibrary\steamapps\common\PEAK\PEAK_Data\Managed\Zorro.Core.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Zorro.Settings.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Patches\SoundHandler.cs" />

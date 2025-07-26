@@ -19,14 +19,15 @@ namespace An0n_Patches
     [BepInPlugin(pluginGUID, pluginName, pluginVersion)]
     public class An0n_Patch_Plugin : BaseUnityPlugin
     {
-        public const string pluginGUID = "com.an0n.patch";
-        private const string pluginName = "An0n Patch";
+        public const string pluginGUID = "com.an0n.yodelPatch";
+        private const string pluginName = "An0n Yodel & FallDmg Patch";
         private const string pluginVersion = "1.0.0";
         public static ManualLogSource mls = BepInEx.Logging.Logger.CreateLogSource(pluginGUID);
         private Harmony harmony = new Harmony(pluginGUID);
         public static ConfigEntry<bool> enableFallDmgSounds;
         public static ConfigEntry<bool> allowYodel;
         public static ConfigEntry<float> yodelAndFallVolume;
+        public static ConfigEntry<bool> useGameSFXVolume;
         public static An0n_Patch_Plugin instance;
         public static string soundLoc;
         private void Awake()
@@ -40,10 +41,14 @@ namespace An0n_Patches
                              "allowYodel",
                              true,
                              "Allow yodeling or not");
+            useGameSFXVolume = Config.Bind("General",
+                             "useGameSFXVolume",
+                             true,
+                             "Set yodel and fall to use the game SFX audio setting.");
             yodelAndFallVolume = Config.Bind("General",
                              "yodelAndFallVolume",
                              1.0f,
-                             "Volume of the yodel and fall damage sounds. 0.0-1.0");
+                             "If NOT using useGameSFXVolume, Volume of the yodel and fall damage sounds. 0.0-1.0");
 
             Debug.Log("[An0nPatch] Yodel & Fall Sounds Plugin "+pluginVersion+" Loaded!");
             
