@@ -26,7 +26,7 @@ using UnityEngine.InputSystem.Utilities;
 namespace An0n_Patches.Patches
 {
 
-    public static class CoroutineHelper
+   /* public static class CoroutineHelper
     {
         private class CoroutineRunner : MonoBehaviour
         {
@@ -41,9 +41,18 @@ namespace An0n_Patches.Patches
                 coroutineObject = new GameObject("CoroutineHelper");
                 Object.DontDestroyOnLoad((Object)(object)coroutineObject);
             }
-            ((MonoBehaviour)coroutineObject.AddComponent<CoroutineRunner>()).StartCoroutine(coroutine);
+            CoroutineRunner tempRunner = coroutineObject.GetComponent<CoroutineRunner>();
+            if (tempRunner != null)
+            {
+                tempRunner.StartCoroutine(coroutine);
+            }
+            else
+            {
+                ((MonoBehaviour)coroutineObject.AddComponent<CoroutineRunner>()).StartCoroutine(coroutine);
+            }
+            
         }
-    }
+    }*/
 
 
     [HarmonyPatch(typeof(RunManager))]
@@ -93,6 +102,7 @@ namespace An0n_Patches.Patches
             pmouth.mouthRenderer.material.SetInt("_UseTalkSprites", 1);
             pmouth.isSpeaking = true;
             pmouth.mouthRenderer.material.SetTexture("_TalkSprite", pmouth.mouthTextures[2]);
+            //Player.localPlayer.StartCoroutine(otherFaceYodelEnable(player));
             RunManager.Instance.StartCoroutine(otherFaceYodelEnable(player));
         }
 

@@ -43,7 +43,7 @@ namespace An0n_Patches.Patches
             if (!An0n_Patch_Plugin.enableFallDmgSounds.Value && rSound < 9) { return; }
             string edd = "ed" + rSound.ToString() + ".wav";
             string path = An0n_Patch_Plugin.soundLoc + edd;
-            CoroutineHelper.StartCoroutine(SoundHandler.LoadAudio("file:///" + path, (AudioClip sound) =>
+            RunManager.Instance.StartCoroutine(SoundHandler.LoadAudio("file:///" + path, (AudioClip sound) =>
             {
                 if (sound == null)
                 {
