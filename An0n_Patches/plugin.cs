@@ -54,7 +54,7 @@ namespace An0n_Patches
             this.patcher = new Harmony(pluginGUID);
             this.patcher.PatchAll(typeof(PlayerControllerPatch));
             this.patcher.PatchAll(typeof(RunManagerPatch));
-            this.patcher.PatchAll(typeof(SndPatch));
+            this.patcher.PatchAll(typeof(PlayerSndComponent));
             
 
         }

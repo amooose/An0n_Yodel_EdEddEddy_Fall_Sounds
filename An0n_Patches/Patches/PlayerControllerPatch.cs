@@ -58,14 +58,13 @@ namespace An0n_Patches.Patches
     }
 
 
-    public static class SndPatch
+    public static class PlayerSndComponent
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(Character), "Awake")]
         public static void AwakePatch(Character __instance)
         {
             ((Component)__instance).gameObject.AddComponent<PlayerControllerPatch>();
-           //Debug.Log((object)("Added Component to character: " + __instance.characterName));
         }
     }
 
@@ -73,30 +72,12 @@ namespace An0n_Patches.Patches
     internal class PlayerControllerPatch : MonoBehaviour
     {
 
-        public static AudioClip newSFX;
-        public static IEnumerator LoadAudio(string url, Action<AudioClip> callback)
-        {
-            UnityEngine.Networking.UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, (AudioType)20);
-            try
-            {
-                yield return www.SendWebRequest();
-                if ((int)www.result == 2)
-                {
-                    yield break;
-                }
-                AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
-                if ((Object)(object)clip == (Object)null)
-                {
-                    yield break;
-                }
-                callback(clip);
-            }
-            finally
-            {
-                ((IDisposable)www)?.Dispose();
-            }
-        }
+        static int lastPlayed = 0;
+        public static bool yodel = false;
+        public static bool yJump = false;
+        static float force = 0f;
 
+        //Handle other player's faces yodeling: re-enable face
         public static IEnumerator otherFaceYodelEnable(Character player)
         {
             yield return new WaitForSeconds((float)1.7f);
@@ -104,6 +85,7 @@ namespace An0n_Patches.Patches
             pmouth.enabled = true;
         }
 
+        //Handle other player's faces yodeling: open mouth+disable face
         public static void otherFaceYodel(Character player)
         {
             AnimatedMouth pmouth = player.GetComponent<AnimatedMouth>();
@@ -114,56 +96,7 @@ namespace An0n_Patches.Patches
             RunManager.Instance.StartCoroutine(otherFaceYodelEnable(player));
         }
 
-
-        public static void getAudioAndPlay(Character player, int rSound)
-        {
-            if(!An0n_Patch_Plugin.allowYodel.Value && rSound == 9) {  return; }
-            if (!An0n_Patch_Plugin.enableFallDmgSounds.Value && rSound < 9) { return; }
-            string edd = "ed" + rSound.ToString() + ".wav";
-            string path = An0n_Patch_Plugin.soundLoc + edd;
-            CoroutineHelper.StartCoroutine(LoadAudio("file:///" + path, (AudioClip sound) =>
-            {
-                if (sound == null){
-                    Debug.LogError("Failed to load Edd sounds!");
-                    return;
-                }
-
-                AudioSource charDmg;
-                GameObject sfx = player.gameObject.transform.FindChild("Scout").FindChild("SFX").gameObject;
-                charDmg = sfx.GetComponent<AudioSource>();
-                if (charDmg == null)
-                {
-                    sfx.AddComponent<AudioSource>();
-                    
-                    charDmg = sfx.GetComponent<AudioSource>();
-
-                }
-
-                charDmg.spatialBlend = 1f;
-                charDmg.dopplerLevel = 1f;
-                charDmg.minDistance = 12f;
-                charDmg.maxDistance = 1000f;
-                charDmg.rolloffMode = AudioRolloffMode.Logarithmic;
-                charDmg.clip = sound;
-                charDmg.Play();
-
-                //If its a yodel, show it on the other players face as well
-                if (player.name != Player.localPlayer.character.name && rSound == 9)
-                {
-                    otherFaceYodel(player);
-                }
-
-            }));
-
-        }
-
-
-
-        static int lastPlayed = 0;
-        public static bool yodel = false;
-        public static bool yJump = false;
-        static float force = 0f;
-
+        
 
         //TODO: make it more future-proof instead of injecting at line specific in function
         [HarmonyTranspiler]
@@ -178,6 +111,7 @@ namespace An0n_Patches.Patches
             return list;
         }
 
+        //Play damage sound and send out RPC
         static void selfDmgFallPlayAudio()
         {
             System.Random randomDirection = new System.Random();
@@ -190,11 +124,12 @@ namespace An0n_Patches.Patches
                     rSound = randomDirection.Next(1, 9);
                 }
             }
-            getAudioAndPlay(Player.localPlayer.character, rSound);
+            SoundHandler.getAudioAndPlay(Player.localPlayer.character, rSound);
             Player.localPlayer.character.refs.view.RPC("playPlayerSound", RpcTarget.Others, Player.localPlayer.character.refs.view.ViewID,rSound);
             lastPlayed = rSound;
         }
 
+        //Stop Jump while Yodel
         [HarmonyPatch(typeof(CharacterMovement), "TryToJump")]
         [HarmonyPrefix()]
         static bool stopYodelJump(object __instance)
@@ -206,6 +141,7 @@ namespace An0n_Patches.Patches
             return true;
         }
 
+        //Handle Yodel key, yodel sound, and mouth movement for client and host.
         [HarmonyPatch(typeof(CharacterMovement), "Update")]
         [HarmonyPostfix()]
         static void yodelKey(object __instance)
@@ -223,7 +159,7 @@ namespace An0n_Patches.Patches
                     "A_Scout_Emote_Shrug"
                 });
              
-                getAudioAndPlay(locPlayer, 9);
+                SoundHandler.getAudioAndPlay(locPlayer, 9);
                 Player.localPlayer.character.refs.view.RPC("playPlayerSound", RpcTarget.Others, locPlayer.refs.view.ViewID, 9);
 
                 AnimatedMouth pmouth = locPlayer.GetComponent<AnimatedMouth>();
@@ -242,6 +178,7 @@ namespace An0n_Patches.Patches
             }
         }
 
+        //Apply yodel effect for yourself.
         public static IEnumerator yodelEnable(float mult)
         {
             Character locPlayer = Player.localPlayer.character;
@@ -255,13 +192,14 @@ namespace An0n_Patches.Patches
             yodel = false;
         }
 
+        //Send sound RPC
         [PunRPC]
         private void playPlayerSound(int name, int rSound)
         {
             Character senderCharacter = null;
             Character.GetCharacterWithPhotonID(name, out senderCharacter);
             Debug.Log($"Received message: {senderCharacter.name} sound: {rSound.ToString()}");
-            getAudioAndPlay(senderCharacter, rSound);
+            SoundHandler.getAudioAndPlay(senderCharacter, rSound);
         }
     }
 }
