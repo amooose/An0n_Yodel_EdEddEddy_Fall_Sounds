@@ -5,7 +5,7 @@
 [![Youtube Video](https://i.imgur.com/uX7kfou.jpeg)](https://youtu.be/8lyHo8U0NA8)
 
 ## Features
-**Sound volume are tied to the ingame SFX volume setting by default!**  
+**Sound volume is tied to the ingame SFX volume setting by default!**  
 Press Y to Yodel! You'll stand still while you yodel, and the distance people can hear you yodel is the same distance as voice chat.  
 There's a 10 second cooldown between yodels.  
 Plus Random Ed Edd & Eddy fall damage sounds!
