@@ -2,6 +2,7 @@
 
 **All players need the mod to work!**  
 **Youtube Video Mod Showcase:**  
+Click the Image to Play:  
 [![Youtube Video](https://i.imgur.com/uX7kfou.jpeg)](https://youtu.be/8lyHo8U0NA8)
 
 ## Features
