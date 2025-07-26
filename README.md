@@ -1,4 +1,4 @@
-# [An0n] Yodel + Ed Edd & Eddy Fall Sounds
+# [An0n] Peak Mod: Yodel + Ed Edd & Eddy Fall Sounds
 
 **All players need the mod to work!**  
 **Youtube Video Mod Showcase:**  
